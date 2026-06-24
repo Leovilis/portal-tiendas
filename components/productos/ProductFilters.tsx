@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/accordion";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ProductoFilters } from "@/lib/types/product.types";
+import type { ProductoFilters } from "@/types/product.types";
 
 const CATEGORIAS = [
     { id: "ropa", label: "👕 Ropa y Moda" },

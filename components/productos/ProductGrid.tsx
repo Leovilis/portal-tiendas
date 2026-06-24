@@ -3,7 +3,7 @@
 
 import { ProductCard } from "./ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Producto } from "@/lib/types/product.types";
+import type { Producto } from "@/types/product.types";
 import { cn } from "@/lib/utils";
 
 // src/components/productos/ProductGrid.tsx

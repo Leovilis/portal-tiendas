@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart, Eye, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Producto } from "@/lib/types/product.types";
+import type { Producto } from "@/types/product.types";
 
 interface ProductCardProps {
     producto: Producto;
