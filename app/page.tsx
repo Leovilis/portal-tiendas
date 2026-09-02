@@ -1,39 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { TiendaCard } from "@/components/tiendas/TiendaCard";
 import { ArrowRight, Shield, Truck, Zap } from "lucide-react";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import type { TiendaCardProps } from "@/components/tiendas/TiendaCard";
 
-// Datos de ejemplo (después vendrán de tu API)
-const tiendasDestacadas = [
-  {
-    id: "1",
-    nombre: "Moda & Estilo",
-    logo: "https://picsum.photos/64/64?random=1",
-    categoria: "Ropa",
-    ubicacion: "Madrid",
-    rating: 4.8,
-    esOficial: true,
-  },
-  {
-    id: "2",
-    nombre: "TecnoShop",
-    logo: "https://picsum.photos/64/64?random=2",
-    categoria: "Electrónica",
-    ubicacion: "Barcelona",
-    rating: 4.9,
-    esOficial: true,
-  },
-  {
-    id: "3",
-    nombre: "Hogar & Deco",
-    logo: "https://picsum.photos/64/64?random=3",
-    categoria: "Hogar",
-    ubicacion: "Valencia",
-    rating: 4.7,
-    esOficial: false,
-  },
-];
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: tiendaRows } = await supabase
+    .from("tiendas")
+    .select("id, nombre, logo, categoria, ubicacion, rating, esOficial")
+    .order("rating", { ascending: false })
+    .limit(3);
 
-export default function Home() {
+  const tiendasDestacadas: TiendaCardProps[] = (tiendaRows ?? []).map((t) => ({
+    id: t.id,
+    nombre: t.nombre,
+    logo: t.logo ?? undefined,
+    categoria: t.categoria,
+    ubicacion: t.ubicacion ?? "Ubicación no especificada",
+    rating: t.rating,
+    esOficial: t.esOficial,
+  }));
+
   return (
     <>
       {/* Hero Section */}
@@ -49,13 +38,17 @@ export default function Home() {
               Todo lo que necesitas para vender más.
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg" className="text-lg">
-                Crear mi tienda
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg">
-                Explorar tiendas
-              </Button>
+              <Link href="/register">
+                <Button size="lg" className="text-lg">
+                  Crear mi tienda
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/tiendas">
+                <Button size="lg" variant="outline" className="text-lg">
+                  Explorar tiendas
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -91,21 +84,23 @@ export default function Home() {
       </section>
 
       {/* Featured Stores */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Tiendas destacadas</h2>
-            <p className="text-muted-foreground">
-              Los mejores vendedores están en PortalTiendas
-            </p>
+      {tiendasDestacadas.length > 0 && (
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Tiendas destacadas</h2>
+              <p className="text-muted-foreground">
+                Los mejores vendedores están en PortalTiendas
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tiendasDestacadas.map((tienda) => (
+                <TiendaCard key={tienda.id} {...tienda} />
+              ))}
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tiendasDestacadas.map((tienda) => (
-              <TiendaCard key={tienda.id} {...tienda} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

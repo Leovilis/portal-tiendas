@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 export interface TiendaCardProps {
     id: string;
     nombre: string;
-    logo: string;
+    logo?: string;
     portada?: string;
     categoria: string;
     ubicacion: string;

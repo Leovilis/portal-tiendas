@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { AuthProvider } from "@/components/providers/AuthProvider";
+import { CartProvider } from "@/components/providers/CartProvider";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/server";
+import type { Profile } from "@/lib/types/auth.types";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const jakarta = Plus_Jakarta_Sans({ 
-  subsets: ["latin"], 
-  variable: "--font-jakarta" 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -15,20 +20,39 @@ export const metadata: Metadata = {
   description: "Crea tu tienda online y empieza a vender hoy mismo",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let profile: Profile | null = null;
+  if (user) {
+    const { data } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle();
+    profile = (data as Profile | null) ?? null;
+  }
+
   return (
     <html lang="es" className="scroll-smooth">
       <body className={cn(
-        "min-h-screen bg-background font-sans antialiased",
-        inter.variable,
-        jakarta.variable
+        "min-h-screen bg-background font-sans antialiased flex flex-col",
+        poppins.variable
       )}>
-        <Navbar />
-        <main>{children}</main>
+        <AuthProvider initialUser={user} initialProfile={profile}>
+          <CartProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

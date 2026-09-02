@@ -38,3 +38,28 @@ export interface Categoria {
     icono?: string;
     subcategorias?: string[];
 }
+
+// src/lib/types/product.types.ts
+// Reseña genérica: se usa tanto para reseñas de productos como de tiendas.
+export interface Resena {
+    id: string;
+    entidadId: string; // id del producto o de la tienda reseñada
+    autor: string;
+    avatar?: string;
+    rating: number; // 1 a 5
+    titulo?: string;
+    comentario: string;
+    fecha: Date;
+    util: number; // cantidad de "le fue útil"
+    compraVerificada?: boolean;
+    respuestaTienda?: {
+        mensaje: string;
+        fecha: Date;
+    };
+}
+
+export interface ResenasResumen {
+    promedio: number;
+    total: number;
+    distribucion: Record<1 | 2 | 3 | 4 | 5, number>;
+}

@@ -7,9 +7,10 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart, Eye, Heart } from "lucide-react";
+import { Star, ShoppingCart, Eye, Heart, Check, ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Producto } from "@/lib/types/product.types";
+import { useCart } from "@/components/providers/CartProvider";
 
 interface ProductCardProps {
     producto: Producto;
@@ -26,6 +27,25 @@ export function ProductCard({
 }: ProductCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
+    const [agregado, setAgregado] = useState(false);
+    const { agregarItem } = useCart();
+
+    const handleComprar = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (producto.stock === 0) return;
+        agregarItem({
+            productoId: producto.id,
+            tiendaId: producto.tiendaId,
+            nombre: producto.nombre,
+            slug: producto.slug,
+            precio: producto.precio,
+            precioOferta: producto.precioOferta,
+            imagen: producto.imagenes[0],
+            stock: producto.stock,
+        });
+        setAgregado(true);
+        setTimeout(() => setAgregado(false), 1500);
+    };
 
     const precioActual = producto.precioOferta || producto.precio;
     const tieneDescuento = !!producto.precioOferta;
@@ -38,13 +58,19 @@ export function ProductCard({
         return (
             <Card className={cn("overflow-hidden hover:shadow-lg transition-all", className)}>
                 <div className="flex">
-                    <div className="relative w-32 h-32 flex-shrink-0">
-                        <Image
-                            src={producto.imagenes[0]}
-                            alt={producto.nombre}
-                            fill
-                            className="object-cover"
-                        />
+                    <div className="relative w-32 h-32 flex-shrink-0 bg-muted">
+                        {producto.imagenes[0] ? (
+                            <Image
+                                src={producto.imagenes[0]}
+                                alt={producto.nombre}
+                                fill
+                                className="object-cover"
+                            />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                                <ImageOff className="h-6 w-6" />
+                            </div>
+                        )}
                     </div>
                     <div className="flex-1 p-4">
                         <Link href={`/producto/${producto.id}`}>
@@ -86,12 +112,18 @@ export function ProductCard({
             <Link href={`/producto/${producto.id}`}>
                 <div className={cn("group cursor-pointer", className)}>
                     <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
-                        <Image
-                            src={producto.imagenes[0]}
-                            alt={producto.nombre}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        {producto.imagenes[0] ? (
+                            <Image
+                                src={producto.imagenes[0]}
+                                alt={producto.nombre}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                                <ImageOff className="h-6 w-6" />
+                            </div>
+                        )}
                         {producto.esNuevo && (
                             <Badge className="absolute top-2 left-2 bg-green-500">Nuevo</Badge>
                         )}
@@ -127,12 +159,18 @@ export function ProductCard({
         >
             {/* Imagen */}
             <div className="relative aspect-square overflow-hidden bg-muted">
-                <Image
-                    src={producto.imagenes[0]}
-                    alt={producto.nombre}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                {producto.imagenes[0] ? (
+                    <Image
+                        src={producto.imagenes[0]}
+                        alt={producto.nombre}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                ) : (
+                    <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                        <ImageOff className="h-8 w-8" />
+                    </div>
+                )}
 
                 {/* Badges */}
                 <div className="absolute top-2 left-2 flex flex-col gap-1">
@@ -155,9 +193,15 @@ export function ProductCard({
                     "absolute inset-0 bg-black/50 flex items-center justify-center gap-2 transition-opacity duration-300",
                     isHovered ? "opacity-100" : "opacity-0"
                 )}>
-                    <Button size="sm" variant="secondary" className="gap-1">
-                        <ShoppingCart className="h-4 w-4" />
-                        Comprar
+                    <Button
+                        size="sm"
+                        variant="secondary"
+                        className="gap-1"
+                        disabled={producto.stock === 0}
+                        onClick={handleComprar}
+                    >
+                        {agregado ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+                        {agregado ? "¡Agregado!" : "Comprar"}
                     </Button>
                     <Button size="sm" variant="secondary">
                         <Eye className="h-4 w-4" />

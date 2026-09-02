@@ -2,13 +2,12 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, Users, Star, Clock, TrendingUp, Award } from "lucide-react";
+import { Package, Star, Clock, TrendingUp, Award } from "lucide-react";
 
 interface TiendaStatsProps {
   stats: {
     productos: number;
     ventas: number;
-    seguidores: number;
     antiguedad: string;
     ratingPromedio: number;
     nivel?: "bronce" | "plata" | "oro" | "platino";
@@ -27,7 +26,7 @@ export function TiendaStats({ stats }: TiendaStatsProps) {
   const NivelIcon = nivelConfig[nivel].icon;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <Card>
         <CardContent className="p-4 flex items-center gap-3">
           <Package className="h-8 w-8 text-primary" />
@@ -44,16 +43,6 @@ export function TiendaStats({ stats }: TiendaStatsProps) {
           <div>
             <p className="text-2xl font-bold">{stats.ventas.toLocaleString()}</p>
             <p className="text-xs text-muted-foreground">Ventas totales</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="p-4 flex items-center gap-3">
-          <Users className="h-8 w-8 text-primary" />
-          <div>
-            <p className="text-2xl font-bold">{stats.seguidores.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">Seguidores</p>
           </div>
         </CardContent>
       </Card>

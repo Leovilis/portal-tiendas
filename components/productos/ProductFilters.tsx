@@ -23,14 +23,14 @@ import { cn } from "@/lib/utils";
 import type { ProductoFilters } from "@/lib/types/product.types";
 
 const CATEGORIAS = [
-    { id: "ropa", label: "👕 Ropa y Moda" },
-    { id: "electronica", label: "📱 Electrónica" },
-    { id: "hogar", label: "🏠 Hogar y Deco" },
-    { id: "deportes", label: "⚽ Deportes" },
-    { id: "libros", label: "📚 Libros" },
-    { id: "juguetes", label: "🎮 Juguetes" },
-    { id: "salud", label: "💄 Salud y Belleza" },
-    { id: "alimentos", label: "🍕 Alimentos" },
+    { id: "ropa", label: "Ropa y Moda" },
+    { id: "electronica", label: "Electrónica" },
+    { id: "hogar", label: "Hogar y Deco" },
+    { id: "deportes", label: "Deportes" },
+    { id: "libros", label: "Libros" },
+    { id: "juguetes", label: "Juguetes" },
+    { id: "salud", label: "Salud y Belleza" },
+    { id: "alimentos", label: "Alimentos" },
 ];
 
 const RANGOS_PRECIO = [

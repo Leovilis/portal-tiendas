@@ -120,12 +120,18 @@ function FiltersContent({ filters, onUpdateFilter, onClearFilters, hasFilters }:
 
       <div className="space-y-3">
         <Label className="font-semibold">Ubicación</Label>
-        <Select value={filters.ubicacion} onValueChange={(v) => onUpdateFilter("ubicacion", v)}>
+        <Select
+          value={filters.ubicacion || "todas"}
+          onValueChange={(v) => onUpdateFilter("ubicacion", v === "todas" ? "" : v)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Todas las ubicaciones" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todas</SelectItem>
+            {/* Radix no permite un SelectItem con value="" (esa cadena está
+                reservada para representar "sin selección"), así que usamos
+                un valor centinela y lo traducimos a "" en el estado. */}
+            <SelectItem value="todas">Todas</SelectItem>
             {UBICACIONES.map((ubi) => (
               <SelectItem key={ubi} value={ubi}>{ubi}</SelectItem>
             ))}
