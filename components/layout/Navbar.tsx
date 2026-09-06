@@ -29,12 +29,14 @@ export function Navbar() {
   const inicial = nombreVisible.charAt(0).toUpperCase();
 
   return (
-    <nav className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
+    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Store className="h-6 w-6 text-primary" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Store className="h-4.5 w-4.5" />
+            </span>
             <span className="font-bold text-xl">PortalTiendas</span>
           </Link>
 

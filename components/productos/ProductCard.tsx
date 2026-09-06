@@ -212,7 +212,7 @@ export function ProductCard({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute bottom-2 right-2 bg-white/80 hover:bg-white rounded-full"
+                    className="absolute bottom-2 right-2 bg-background/80 hover:bg-background rounded-full"
                     onClick={(e) => {
                         e.preventDefault();
                         setIsLiked(!isLiked);

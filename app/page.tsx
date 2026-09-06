@@ -59,21 +59,27 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6">
-              <Shield className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Shield className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="font-semibold text-xl mb-2">Compra Segura</h3>
               <p className="text-muted-foreground">
                 Protegemos todas tus transacciones con nuestra garantía de compra
               </p>
             </div>
             <div className="text-center p-6">
-              <Truck className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-[oklch(0.7_0.16_162)]/10 flex items-center justify-center">
+                <Truck className="h-7 w-7 text-[oklch(0.55_0.16_162)] dark:text-[oklch(0.75_0.15_162)]" />
+              </div>
               <h3 className="font-semibold text-xl mb-2">Envíos Rápidos</h3>
               <p className="text-muted-foreground">
                 Logística integrada con entregas en 24-48 horas
               </p>
             </div>
             <div className="text-center p-6">
-              <Zap className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-[oklch(0.77_0.17_70)]/10 flex items-center justify-center">
+                <Zap className="h-7 w-7 text-[oklch(0.6_0.17_70)] dark:text-[oklch(0.8_0.16_70)]" />
+              </div>
               <h3 className="font-semibold text-xl mb-2">Sin Comisiones Ocultas</h3>
               <p className="text-muted-foreground">
                 Planes claros y transparentes para tu negocio

@@ -39,7 +39,7 @@ export function TiendaStats({ stats }: TiendaStatsProps) {
 
       <Card>
         <CardContent className="p-4 flex items-center gap-3">
-          <TrendingUp className="h-8 w-8 text-primary" />
+          <TrendingUp className="h-8 w-8 text-[oklch(0.55_0.16_162)] dark:text-[oklch(0.75_0.15_162)]" />
           <div>
             <p className="text-2xl font-bold">{stats.ventas.toLocaleString()}</p>
             <p className="text-xs text-muted-foreground">Ventas totales</p>
@@ -49,7 +49,7 @@ export function TiendaStats({ stats }: TiendaStatsProps) {
 
       <Card>
         <CardContent className="p-4 flex items-center gap-3">
-          <Clock className="h-8 w-8 text-primary" />
+          <Clock className="h-8 w-8 text-[oklch(0.6_0.15_237)] dark:text-[oklch(0.75_0.14_237)]" />
           <div>
             <p className="text-xl font-bold">{stats.antiguedad}</p>
             <p className="text-xs text-muted-foreground">En el portal</p>

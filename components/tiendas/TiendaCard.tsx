@@ -64,7 +64,7 @@ export function TiendaCard({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute top-2 left-2 bg-white/80 hover:bg-white"
+                    className="absolute top-2 left-2 bg-background/80 hover:bg-background"
                 >
                     <Heart className="h-4 w-4" />
                 </Button>

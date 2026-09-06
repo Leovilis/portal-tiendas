@@ -75,7 +75,7 @@ export function TiendaVendedorResumen({
 
                 <Card>
                     <CardContent className="p-4 flex items-center gap-3">
-                        <ClipboardList className="h-8 w-8 text-primary" />
+                        <ClipboardList className="h-8 w-8 text-[oklch(0.6_0.15_237)] dark:text-[oklch(0.75_0.14_237)]" />
                         <div>
                             <p className="text-2xl font-bold">{pedidosTotales}</p>
                             <p className="text-xs text-muted-foreground">Pedidos totales</p>
