@@ -68,8 +68,8 @@ export default async function Home() {
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-[oklch(0.7_0.16_162)]/10 flex items-center justify-center">
-                <Truck className="h-7 w-7 text-[oklch(0.55_0.16_162)] dark:text-[oklch(0.75_0.15_162)]" />
+              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-[oklch(0.6_0.12_140)]/10 flex items-center justify-center">
+                <Truck className="h-7 w-7 text-[oklch(0.45_0.13_140)] dark:text-[oklch(0.72_0.12_140)]" />
               </div>
               <h3 className="font-semibold text-xl mb-2">Envíos Rápidos</h3>
               <p className="text-muted-foreground">
@@ -77,8 +77,8 @@ export default async function Home() {
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-[oklch(0.77_0.17_70)]/10 flex items-center justify-center">
-                <Zap className="h-7 w-7 text-[oklch(0.6_0.17_70)] dark:text-[oklch(0.8_0.16_70)]" />
+              <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-[oklch(0.74_0.15_85)]/10 flex items-center justify-center">
+                <Zap className="h-7 w-7 text-[oklch(0.55_0.15_85)] dark:text-[oklch(0.8_0.15_85)]" />
               </div>
               <h3 className="font-semibold text-xl mb-2">Sin Comisiones Ocultas</h3>
               <p className="text-muted-foreground">
