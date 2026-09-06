@@ -1,19 +1,9 @@
--- 0001_link_users_to_auth.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Este archivo
--- queda en el repo como registro versionado de lo que se corrió, y para que
--- `supabase db push`/CLI no la vuelva a intentar en otro entorno sin este
--- historial. Es idempotente: se puede re-ejecutar sin romper nada.
---
--- Qué hace: reconecta public.users (que tenía id de texto tipo Prisma y una
--- columna password propia) a Supabase Auth. Las filas existentes (por
--- ejemplo cuentas de prueba ya cargadas) se conservan con un uuid nuevo;
--- cuando esa persona se registre de nuevo con el mismo email vía Supabase
--- Auth, el trigger de más abajo reconecta esa fila en vez de duplicarla.
+-- Versión idempotente: segura de re-ejecutar si se corta a mitad de camino.
 
 -- 0) Limpiar restos de intentos previos
 drop index if exists public.users_email_key;
 
--- 1) FKs que dependen del tipo de users.id
+-- 1) FKs que dependen del tipo de users.id (pedidos/reviews están vacías)
 alter table public.pedidos drop constraint if exists "pedidos_usuarioId_fkey";
 alter table public.reviews drop constraint if exists "reviews_usuarioId_fkey";
 alter table public.users drop constraint if exists "users_pkey";
@@ -48,7 +38,7 @@ begin
     end if;
 end $$;
 
--- 3) usuarioId en pedidos/reviews -> uuid (tablas vacías, cast trivial)
+-- 3) usuarioId en pedidos/reviews -> uuid (tablas vacías, cast trivial e idempotente)
 alter table public.pedidos alter column "usuarioId" type uuid using "usuarioId"::uuid;
 alter table public.reviews alter column "usuarioId" type uuid using "usuarioId"::uuid;
 
@@ -65,7 +55,7 @@ end $$;
 
 alter table public.users alter column "updatedAt" set default now();
 
--- 6) FK a auth.users (NOT VALID: filas legacy aún sin cuenta real en auth.users)
+-- 6) FK a auth.users (NOT VALID: las 3 filas legacy aún no tienen cuenta real)
 do $$
 begin
     if not exists (select 1 from pg_constraint where conname = 'users_id_fkey' and conrelid = 'public.users'::regclass) then
@@ -95,7 +85,6 @@ end $$;
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
-set search_path = public
 as $$
 begin
     new."updatedAt" = now();
@@ -139,8 +128,6 @@ begin
     return new;
 end;
 $$;
-
-revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created

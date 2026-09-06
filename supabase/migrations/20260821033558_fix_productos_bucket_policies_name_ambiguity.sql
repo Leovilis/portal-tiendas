@@ -1,14 +1,10 @@
--- 0006_fix_productos_bucket_policies.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Registro
--- versionado, idempotente (drop/create policy).
---
--- Bug: las políticas de 0004 comparaban tiendaId contra
--- storage.foldername(name), pero public.users también tiene una columna
--- "name" (el nombre del usuario). Dentro del EXISTS correlacionado, la
--- referencia sin calificar a "name" se resolvía contra users.name (shadowing
--- de subquery en Postgres) en vez de storage.objects.name (el path real del
--- archivo). Resultado: la condición nunca matcheaba y toda subida, edición o
--- borrado de imágenes de producto fallaba con "new row violates row-level
+-- Fix: las políticas del bucket "productos" comparaban tiendaId contra
+-- storage.foldername(name) pero, como public.users también tiene una
+-- columna "name" (el nombre del usuario), la referencia sin calificar a
+-- "name" dentro del EXISTS se resolvía contra users.name en vez de
+-- storage.objects.name (el path del archivo) — shadowing clásico de
+-- subquery correlacionada en Postgres. Resultado: la condición nunca
+-- matcheaba y toda subida/edición/borrado fallaba con "violates row-level
 -- security policy". Se corrige calificando explícitamente storage.objects.name.
 
 drop policy if exists "productos_bucket_owner_insert" on storage.objects;

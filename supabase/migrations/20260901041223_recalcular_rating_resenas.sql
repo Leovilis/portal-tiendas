@@ -1,21 +1,3 @@
--- 0009_recalcular_rating_resenas.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Registro
--- versionado (idempotente, se puede re-ejecutar sin romper nada).
---
--- Por qué existe: hasta ahora "Escribir reseña" en la página de producto no
--- hacía nada (solo cerraba el modal). Al conectarlo de verdad a un INSERT en
--- public.reviews, hace falta que productos.rating/totalReviews y
--- tiendas.rating/totalReviews (que se muestran en toda la app) se mantengan
--- al día automáticamente, sin depender de que cada lugar del código que
--- inserta/edita/borra una reseña se acuerde de recalcularlos a mano.
---
--- Este trigger corre en cada INSERT/UPDATE/DELETE sobre reviews y
--- recalcula el promedio real y el conteo real, tanto para el producto como
--- para la tienda (el rating de tienda es el promedio de TODAS sus reseñas,
--- de todos sus productos). SECURITY DEFINER porque quien escribe la reseña
--- (un comprador cualquiera) no tiene permiso de UPDATE directo sobre
--- productos/tiendas.
-
 create or replace function public.recalcular_rating_resenas()
 returns trigger
 language plpgsql

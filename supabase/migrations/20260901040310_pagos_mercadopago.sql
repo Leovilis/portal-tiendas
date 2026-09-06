@@ -1,26 +1,5 @@
--- 0008_pagos_mercadopago.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Registro
--- versionado (idempotente, se puede re-ejecutar sin romper nada).
---
--- Por qué existe: implementa el cobro real con MercadoPago, con el modelo
--- "marketplace" (cada vendedor cobra a su propia cuenta, como Mercado
--- Libre): cada tienda carga su propio Access Token en tienda_configs, y al
--- pagar, el dinero va directo a la cuenta de MercadoPago de ESE vendedor.
---
--- Piezas:
---   1) Dos columnas nuevas en pedidos para rastrear la preferencia y el pago
---      de MercadoPago asociados.
---   2) Un constraint UNIQUE en tienda_configs."tiendaId" para poder hacer
---      upsert (una config por tienda).
---   3) obtener_datos_pago_pedido(pedidoId): función SECURITY DEFINER que le
---      permite al COMPRADOR obtener el Access Token del vendedor para armar
---      la preferencia de pago desde el servidor (nunca desde el navegador).
---      tienda_configs es owner-only por RLS (el comprador no es el dueño de
---      la tienda), así que esta función expone solo lo mínimo necesario
---      -no la tabla completa- y valida que el pedido sea del que llama.
---   4) tienda_acepta_pagos(tiendaId): función pública (sin datos sensibles)
---      que dice si una tienda tiene MercadoPago activado, para poder
---      mostrar u ocultar el botón "Pagar" sin poder leer el token.
+-- Ver supabase/migrations/0008_pagos_mercadopago.sql en el repo para el
+-- comentario completo.
 
 alter table public.pedidos add column if not exists "mercadoPagoPreferenceId" text;
 alter table public.pedidos add column if not exists "mercadoPagoPaymentId" text;
@@ -70,8 +49,6 @@ begin
 end;
 $$;
 
--- Solo el propio comprador (autenticado) puede pedir esto para SU pedido; la
--- función valida auth.uid() adentro. No tiene sentido exponerla a anon.
 revoke all on function public.obtener_datos_pago_pedido(text) from public, anon;
 grant execute on function public.obtener_datos_pago_pedido(text) to authenticated;
 
@@ -90,6 +67,5 @@ as $$
   );
 $$;
 
--- Esta sí es pública: solo devuelve un booleano, nunca el token.
 revoke all on function public.tienda_acepta_pagos(text) from public;
 grant execute on function public.tienda_acepta_pagos(text) to authenticated, anon;

@@ -1,13 +1,6 @@
--- 0004_productos_storage_bucket.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Registro
--- versionado, idempotente (on conflict do nothing + drop/create policy).
---
--- Bucket público de Storage para las fotos de producto que suben los
--- vendedores desde el panel. Cada archivo se guarda bajo la ruta
--- {tiendaId}/{archivo}, y las políticas usan ese primer segmento de carpeta
--- para validar que solo el dueño de esa tienda pueda subir/editar/borrar
--- ahí — el mismo patrón que usamos para las tablas (users.tiendaId).
-
+-- Bucket público para imágenes de producto. Cada archivo se guarda bajo
+-- {tiendaId}/{archivo}, así las políticas pueden validar que solo el dueño
+-- de esa tienda escriba dentro de su propia carpeta.
 insert into storage.buckets (id, name, public)
 values ('productos', 'productos', true)
 on conflict (id) do nothing;

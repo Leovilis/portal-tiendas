@@ -1,29 +1,5 @@
--- 0007_crear_tienda_propia_rpc.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Registro
--- versionado (create or replace, se puede re-ejecutar sin romper nada).
---
--- Por qué existe: el flujo de alta de tienda ("Crear mi tienda", para un
--- VENDEDOR recién registrado que todavía no tiene tiendaId) necesita, en una
--- sola operación atómica:
---   1) crear la fila en public.tiendas
---   2) apuntar public.users.tiendaId del vendedor a esa tienda nueva
---
--- Si esto se hiciera como dos llamadas separadas desde el cliente (insert +
--- update), una falla de red entre medio dejaría una tienda huérfana sin
--- dueño, o un doble click podría crear dos tiendas para la misma persona.
--- La política RLS "tiendas_insert_vendedor" ya permite el insert (cualquier
--- fila de users con role = 'VENDEDOR' puede insertar en tiendas), pero no
--- alcanza para garantizar la atomicidad ni las validaciones de negocio.
---
--- Esta función RPC hace todo con SECURITY DEFINER, validando del lado del
--- servidor:
---   - que haya sesión iniciada (auth.uid())
---   - que la cuenta sea VENDEDOR (nunca USER/ADMIN)
---   - que esa persona todavía no tenga una tienda (evita pisar/duplicar)
---   - lockea la fila de users ("for update") para que dos clicks
---     concurrentes no generen dos tiendas para el mismo usuario
---
--- Devuelve el id de la tienda creada.
+-- Ver supabase/migrations/0007_crear_tienda_propia_rpc.sql en el repo para el
+-- comentario completo. RPC atómica para que un VENDEDOR sin tienda cree la suya.
 
 create or replace function public.crear_tienda_propia(
   p_nombre text,
@@ -102,8 +78,5 @@ begin
 end;
 $$;
 
--- Solo usuarios logueados pueden ejecutarla (no anon): igual la función
--- valida auth.uid() y el rol adentro por las dudas, pero no tiene sentido
--- exponerla a anon.
 revoke all on function public.crear_tienda_propia(text, text, text, text, text, text, text, text, text) from public, anon;
 grant execute on function public.crear_tienda_propia(text, text, text, text, text, text, text, text, text) to authenticated;

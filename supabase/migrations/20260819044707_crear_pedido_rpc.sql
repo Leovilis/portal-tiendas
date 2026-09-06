@@ -1,30 +1,8 @@
--- 0005_crear_pedido_rpc.sql
--- Ya aplicada en tu proyecto Supabase (portal-tiendas) vía MCP. Registro
--- versionado (create or replace, se puede re-ejecutar sin romper nada).
---
--- Por qué existe: el checkout (sin pasarela de pago) necesita, en una sola
--- operación atómica: crear el pedido, crear sus líneas (pedido_productos),
--- descontar stock real de productos, y dejar un registro en
--- pedido_historial. Un comprador no tiene permiso de UPDATE sobre
--- productos (esa política es solo para el dueño de la tienda), así que
--- descontar stock directo desde el cliente no es posible ni deseable.
---
--- Esta función RPC hace todo eso con SECURITY DEFINER, pero validando del
--- lado del servidor lo importante:
---   - que haya sesión iniciada (auth.uid())
---   - que haya stock suficiente (con "for update" para evitar oversell si
---     dos compras concurrentes agarran el mismo producto)
---   - que el precio se calcule con los datos reales de public.productos,
---     nunca con lo que mande el cliente (evita manipular precios desde el
---     navegador)
---
--- Devuelve el id del pedido creado.
-
 create or replace function public.crear_pedido(
   p_tienda_id text,
   p_direccion jsonb,
   p_metodo_pago text,
-  p_items jsonb -- [{"productoId": "...", "cantidad": 2}, ...]
+  p_items jsonb
 )
 returns text
 language plpgsql
@@ -105,8 +83,5 @@ begin
 end;
 $$;
 
--- Solo usuarios logueados pueden ejecutarla (no anon): igual la función
--- valida auth.uid() adentro por las dudas, pero no tiene sentido exponerla
--- a anon.
 revoke all on function public.crear_pedido(text, jsonb, text, jsonb) from public, anon;
 grant execute on function public.crear_pedido(text, jsonb, text, jsonb) to authenticated;
